@@ -1,0 +1,27 @@
+@baseHttpUrl = http://localhost:5018
+
+### 1. Test without any authentication using HTTP (Should return 401 Unauthorized)
+GET {{baseHttpUrl}}/WeatherForecast
+Accept: application/json
+
+### 2. Test with API Key authentication using HTTP (Should return 200 OK)
+GET {{baseHttpUrl}}/WeatherForecast
+Accept: application/json
+X-API-Key: mySecureApiKey123!@#
+
+### 3. Test with Firebase JWT authentication (Should return 200 OK)
+# Note: Replace YOUR_FIREBASE_ID_TOKEN with a valid Firebase ID token
+GET {{baseHttpUrl}}/WeatherForecast
+Accept: application/json
+Authorization: Bearer bearertoken
+
+### 5. Test with invalid API Key (Should return 401 Unauthorized)
+GET {{baseHttpUrl}}/WeatherForecast
+Accept: application/json
+X-API-Key: invalid-api-key
+
+### 6. Test with invalid Firebase token (Should return 401 Unauthorized)
+GET {{baseHttpUrl}}/WeatherForecast
+Accept: application/json
+Authorization: Bearer invalid.token.here
+
