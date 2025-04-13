@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using TestAuth.Handlers;
@@ -59,6 +60,12 @@ builder.Services.AddAuthorization(options =>
             context.User.HasClaim(c => c.Type == System.Security.Claims.ClaimTypes.Role && 
                 (c.Value == "ApiUser" || c.Value == "FirebaseUser"))
         ));
+
+    // Set the default policy to require authentication
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .AddAuthenticationSchemes("ApiKeyOrJwt")
+        .Build();
 });
 
 builder.Services.AddControllers();

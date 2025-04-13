@@ -86,6 +86,48 @@ Authorization: Bearer your-firebase-token
 
 ## Authentication Methods
 
+### Global Authentication
+The application uses global authentication, which means all endpoints require authentication by default. This is configured in `Program.cs` using a fallback policy:
+
+```csharp
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .AddAuthenticationSchemes("ApiKeyOrJwt")
+        .Build();
+});
+```
+
+This means that:
+1. All endpoints require authentication by default
+2. You don't need to add [Authorize] attributes to your controllers or actions
+3. The only way to make an endpoint public is to explicitly mark it with [AllowAnonymous]
+
+Here's an example:
+
+```csharp
+[ApiController]
+[Route("[controller]")]
+public class SomeController : ControllerBase
+{
+    [AllowAnonymous]  // This endpoint is explicitly made public
+    [HttpGet]
+    public IActionResult PublicEndpoint()
+    {
+        return Ok("Hello World! Anyone can access this.");
+    }
+
+    [HttpGet("protected")]  // No [AllowAnonymous], so this is automatically protected
+    public IActionResult ProtectedEndpoint()
+    {
+        // This endpoint requires authentication because of the global FallbackPolicy
+        // No need for [Authorize] attribute - it's protected by default
+        return Ok("Hello Authenticated User!");
+    }
+}
+```
+
 ### API Key Authentication
 - Add the `X-API-Key` header to your requests
 - The API key should match the one in your configuration

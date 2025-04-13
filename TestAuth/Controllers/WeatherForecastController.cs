@@ -5,7 +5,6 @@ namespace TestAuth.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Policy = "ApiKeyOrFirebase")]
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
